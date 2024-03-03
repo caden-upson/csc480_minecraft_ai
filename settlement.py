@@ -11,6 +11,8 @@ from gdpc import __url__, Editor, Block
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
 
+import structures
+
 
 # Create an editor object.
 # The Editor class provides a high-level interface to interact with the Minecraft world.
@@ -80,7 +82,22 @@ for point in buildRect.outline:
     #         editor.placeBlock(addY(point, y), Block(wallPalette[i]))
     
 center = buildRect.center
-for x in range(0, center.x + 32):
-    for z in range(0, center.y + 32):
-        editor.placeBlock((x, height, z), Block("birch_log"))
+# for x in range(0, center.x + 32):
+#     for z in range(0, center.y + 32):
+#         editor.placeBlock((x, height, z), Block("air"))
+
+biome_block_choice = {"minecraft:plains": {"log":"oak_log",
+                                           "plank":"oak_planks",
+                                           "fence":"oak_fence",
+                                           "stairs":"oak_stairs",
+                                           "slab":"oak_slab",
+                                           "door":"oak_door"},
+                      "minecraft:dark_forest": {"log":"oak_log",
+                                           "plank":"oak_plank",
+                                           "fence":"oak_fence",
+                                           "stairs":"oak_stairs",
+                                           "slab":"oak_slab",
+                                           "door":"oak_door"}}
+print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
+structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
             
