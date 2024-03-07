@@ -91,13 +91,17 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "fence":"oak_fence",
                                            "stairs":"oak_stairs",
                                            "slab":"oak_slab",
-                                           "door":"oak_door"},
+                                           "door":"oak_door",
+                                           "leaves":"oak_leaves",
+                                           "fence":"oak_fence"},
                       "minecraft:dark_forest": {"log":"oak_log",
                                            "plank":"oak_plank",
                                            "fence":"oak_fence",
                                            "stairs":"oak_stairs",
                                            "slab":"oak_slab",
                                            "door":"oak_door"}}
-print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
-structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
-            
+# print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
+
+
+# structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
+structures.build_well(biome_block_choice, buildRect, buildRect.middle, editor)

@@ -5,6 +5,71 @@ from gdpc import __url__, Editor, Block, Rect
 from glm import ivec2
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
+    
+# builds a basic well 
+# Builds a basic 11x4x11 house using the build_area given
+def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
+    # Create base for structure
+    foundation = build_area.centeredSubRect((3,3))
+    # Load worldSlice to get the biomes as well as ground height
+    worldSlice = editor.loadWorldSlice(foundation)
+    print("World slice loaded!")
+    # Gets the ground height (the y value the highest block excluding leaves is located)
+    # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    # Get the biome at the locally centered block
+    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple(foundation.size - (foundation.size.x / 2, foundation.size.y / 2))]))
+    if biome == '':
+        biome = 'minecraft:plains'
+    plank = block_choice[biome]['plank']
+    fence = block_choice[biome]['fence']
+    slab = block_choice[biome]['slab']
+    # Get wood types based on biome
+    # 2D array containing the blocks for each level of the build
+    schematic = [[["stone_bricks"] * 3,
+                 (["stone_bricks"] + ["water"] + ["stone_bricks"]),
+                 ["stone_bricks"] * 3],
+
+                 [([fence] + ["air"] + [fence]),
+                 (["air"] + ["cauldron"] + ["air"]),
+                 ([fence] + ["air"] + [fence])],
+
+                 [([fence] + ["air"] + [fence]),
+                 (["air"] + ["chain"] + ["air"]),
+                 ([fence] + ["air"] + [fence])],
+
+                 [[slab] * 3,
+                 ([slab] + [plank] + [slab]),
+                 [slab] * 3]
+                ]
+                 
+    # Gets the two opposite corners of the rectangle
+    opposite_corners = get_opposing_corners(foundation.corners)
+    # Get bounds for loop
+    low_x_cord = min(opposite_corners[0].x, opposite_corners[1].x)
+    high_x_cord = max(opposite_corners[0].x, opposite_corners[1].x)
+    low_z_cord = min(opposite_corners[0].y, opposite_corners[1].y)
+    high_z_cord = max(opposite_corners[0].y, opposite_corners[1].y)
+    # Get ground height
+    height = heightmap[tuple((foundation.center) - foundation.offset)]
+    # How tall the structure will be
+    height_max = height + 4 
+    print("low_x_cord:", low_x_cord)
+    print("high_x_cord:", high_x_cord)
+    print("low_z_cord:", low_z_cord)
+    print("high_z_cord:", high_z_cord)
+    print("height:", height)
+    print("height_max:", height_max)
+    
+    for y in range(height, height_max):
+        for x in range(low_x_cord, high_x_cord):
+            for z in range(low_z_cord, high_z_cord):
+                # Get the ground height for the block on the outline 
+                # Add y-value to 2D vector (only has x,z coordinates)
+                print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
+                editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
+        # print("Level ", y, " done!")
+    pass
 
 # Builds a basic 11x4x11 house using the build_area given
 def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
@@ -98,7 +163,8 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
     # Get ground height
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
-    height_max = height + 4
+
+    height_max = height + 3
     # Loop through every coordinate (4 is the maximum height of the structure)
     for y in range(height, height_max + 1):
         for x in range(low_x_cord, high_x_cord + 1):
@@ -106,7 +172,8 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
-        print("Level ", y, " done!")
+        # print("Level ", y, " done!")
+    pass
             
     
 # Gets the opposite corners of the rectangle object
