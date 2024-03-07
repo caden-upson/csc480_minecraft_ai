@@ -103,5 +103,6 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
 # print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
 
 
-# structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
+structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
 structures.build_well(biome_block_choice, buildRect, buildRect.middle, editor)
+structures.build_pyramid(buildRect, buildRect.middle, editor)
