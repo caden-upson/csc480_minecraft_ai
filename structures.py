@@ -60,10 +60,10 @@ def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     print("high_z_cord:", high_z_cord)
     print("height:", height)
     print("height_max:", height_max)
-    
+
     for y in range(height, height_max):
-        for x in range(low_x_cord, high_x_cord):
-            for z in range(low_z_cord, high_z_cord):
+        for x in range(low_x_cord, high_x_cord + 1):
+            for z in range(low_z_cord, high_z_cord + 1):
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
                 print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
