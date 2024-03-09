@@ -7,7 +7,7 @@ Place and retrieve a single block in the world.
 import sys
 from random import randint
 
-from gdpc import __url__, Editor, Block
+from gdpc import __url__, Editor, Block, Rect
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
 
@@ -60,27 +60,6 @@ worldSlice = editor.loadWorldSlice(buildRect)
 print("World slice loaded!")
 
 heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-
-# print("Placing walls...")
-
-for point in buildRect.outline:
-    # Point is a 2D vector that has the x and z coordinates
-    # addY adds a Y component to the 2D vector to make it a 3D vector
-    # print(point)
-    height = heightmap[tuple(point - buildRect.offset)]
-
-    # Erase blocks that take up space (not fluids)
-    # for y in range(height - 5, height):
-    #     editor.placeBlock(addY(point, y), Block("air"))
-        
-    # Build a wall on the surface that is made from a random selection of blocks
-    # for y in range(height, height + 5):
-    #     i = randint(0, 4)
-    #     wallPalette = [Block(id) for id in 3*["stone_bricks"] + ["cobblestone", "polished_andesite"]]
-    #     if y == height + 4:
-    #         editor.placeBlock(addY(point, y), Block("oak_fence"))
-    #     else:
-    #         editor.placeBlock(addY(point, y), Block(wallPalette[i]))
     
 center = buildRect.center
 # for x in range(0, center.x + 32):
@@ -88,6 +67,14 @@ center = buildRect.center
 #         editor.placeBlock((x, height, z), Block("air"))
 
 biome_block_choice = {"minecraft:plains": {"log":"oak_log",
+                                           "plank":"oak_planks",
+                                           "fence":"oak_fence",
+                                           "stairs":"oak_stairs",
+                                           "slab":"oak_slab",
+                                           "door":"oak_door",
+                                           "leaves":"oak_leaves",
+                                           "fence":"oak_fence"},
+                      "minecraft:meadow": {"log":"oak_log",
                                            "plank":"oak_planks",
                                            "fence":"oak_fence",
                                            "stairs":"oak_stairs",
@@ -103,11 +90,22 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "door":"oak_door",
                                            "leaves":"dark_oak_leaves",}}
 # print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
-
+# Build wall to highlight build area
+print("Building wall")
+util.build_wall(buildRect, heightmap, editor)
 # Clear trees from build area
+print("Clearing trees")
 util.clear_trees(worldSlice, buildRect, editor)
 # Build structures
-structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
-structures.build_well(biome_block_choice, buildRect, buildRect.middle, editor)
-structures.build_tree(biome_block_choice, buildRect, buildRect.middle, editor)
-structures.build_pyramid(buildRect, buildRect.middle, editor)
+# 11x4x11
+print("Building Cabin")
+structures.build_cabin(biome_block_choice, buildRect.between((41,41), (52, 52)), buildRect.middle, editor)
+# 3x4x3
+print("Building Well")
+structures.build_well(biome_block_choice, buildRect.between((4,31), (7, 34)), buildRect.middle, editor)
+# 5xYx5
+print("Building Tree")
+structures.build_tree(biome_block_choice, buildRect.between((11,19), (16, 24)), buildRect.middle, editor)
+# 7x4x7
+print("Building Pyramid")
+structures.build_pyramid(buildRect, buildRect.between((3,12), (10, 19)), editor)

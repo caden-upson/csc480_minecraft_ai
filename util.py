@@ -34,3 +34,22 @@ def remove_tree(editor: Editor, position: Vec3iLike):
         editor.placeBlock(position, Block("air"))
         # Decrement y-value
         position = position - (0, 1, 0)
+        
+# Builds a wall around the build area
+def build_wall(buildRect: Rect, heightmap: dict, editor: Editor):
+    # print("Placing walls...")
+
+    for point in buildRect.outline:
+        # Point is a 2D vector that has the x and z coordinates
+        # addY adds a Y component to the 2D vector to make it a 3D vector
+        
+        height = heightmap[tuple(point - buildRect.offset)]
+            
+        # Build a wall on the surface that is made from a random selection of blocks
+        for y in range(height, height + 5):
+            i = randint(0, 4)
+            wallPalette = [Block(id) for id in 3*["stone_bricks"] + ["cobblestone", "polished_andesite"]]
+            if y == height + 4:
+                editor.placeBlock(addY(point, y), Block("oak_fence"))
+            else:
+                editor.placeBlock(addY(point, y), Block(wallPalette[i]))

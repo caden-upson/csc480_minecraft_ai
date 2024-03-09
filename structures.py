@@ -11,7 +11,7 @@ def build_pyramid(build_area: Rect, center_vector: ivec2, editor: Editor):
     foundation = build_area.centeredSubRect((7,7))
     # Load worldSlice to get the biomes as well as ground height
     worldSlice = editor.loadWorldSlice(foundation)
-    print("World slice loaded!")
+    # print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     # 2D array containing the blocks for each level of the build
@@ -110,19 +110,19 @@ def build_pyramid(build_area: Rect, center_vector: ivec2, editor: Editor):
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
     height_max = height + 4 
-    print("low_x_cord:", low_x_cord)
-    print("high_x_cord:", high_x_cord)
-    print("low_z_cord:", low_z_cord)
-    print("high_z_cord:", high_z_cord)
-    print("height:", height)
-    print("height_max:", height_max)
+    # print("low_x_cord:", low_x_cord)
+    # print("high_x_cord:", high_x_cord)
+    # print("low_z_cord:", low_z_cord)
+    # print("high_z_cord:", high_z_cord)
+    # print("height:", height)
+    # print("height_max:", height_max)
 
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):
             for z in range(low_z_cord, high_z_cord + 1):
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
-                print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
+                # print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
                 rotation = rotations[y - height][x - low_x_cord][z - low_z_cord] 
                 if rotation is not None:
                     editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord], {"facing": rotation}))
@@ -177,19 +177,19 @@ def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
     height_max = height + 4 
-    print("low_x_cord:", low_x_cord)
-    print("high_x_cord:", high_x_cord)
-    print("low_z_cord:", low_z_cord)
-    print("high_z_cord:", high_z_cord)
-    print("height:", height)
-    print("height_max:", height_max)
+    # print("low_x_cord:", low_x_cord)
+    # print("high_x_cord:", high_x_cord)
+    # print("low_z_cord:", low_z_cord)
+    # print("high_z_cord:", high_z_cord)
+    # print("height:", height)
+    # print("height_max:", height_max)
 
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):
             for z in range(low_z_cord, high_z_cord + 1):
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
-                print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
+                # print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
         # print("Level ", y, " done!")
     pass
@@ -200,7 +200,7 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
     foundation = build_area.centeredSubRect((11,11))
     # Load worldSlice to get the biomes as well as ground height
     worldSlice = editor.loadWorldSlice(foundation)
-    print("World slice loaded!")
+    # print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
@@ -287,7 +287,7 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
 
-    height_max = height + 3
+    height_max = height + 4
     # Loop through every coordinate (4 is the maximum height of the structure)
     for y in range(height, height_max + 1):
         for x in range(low_x_cord, high_x_cord + 1):
@@ -295,7 +295,7 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
-        print("Level ", y, " done!")
+        #print("Level ", y, " done!")
 
 
 #build a tree of variable height
@@ -305,7 +305,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     # Load worldSlice to get the biomes as well as ground height
     worldSlice = editor.loadWorldSlice(foundation)
     treeHeight = randint(2, 5)
-    print("World slice loaded!")
+    # print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
@@ -357,7 +357,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     # Get ground height
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
-    print(treeHeight)
+    # print(treeHeight)
     height_max = height + 3 + treeHeight
     # Loop through every coordinate (5 is the maximum height of the structure)
     for y in range(height, height_max):
@@ -366,7 +366,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
                 # Get the ground height for the block on the outline 
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
-        print("Level ", y, " done!")
+        # print("Level ", y, " done!")
 
             
     
