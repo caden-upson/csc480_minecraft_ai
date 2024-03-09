@@ -12,6 +12,7 @@ from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
 
 import structures
+import util
 
 
 # Create an editor object.
@@ -60,19 +61,19 @@ print("World slice loaded!")
 
 heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
 
-print("Placing walls...")
+# print("Placing walls...")
 
 for point in buildRect.outline:
     # Point is a 2D vector that has the x and z coordinates
     # addY adds a Y component to the 2D vector to make it a 3D vector
-    print(point)
+    # print(point)
     height = heightmap[tuple(point - buildRect.offset)]
 
     # Erase blocks that take up space (not fluids)
     # for y in range(height - 5, height):
     #     editor.placeBlock(addY(point, y), Block("air"))
         
-    # # Build a wall on the surface that is made from a random selection of blocks
+    # Build a wall on the surface that is made from a random selection of blocks
     # for y in range(height, height + 5):
     #     i = randint(0, 4)
     #     wallPalette = [Block(id) for id in 3*["stone_bricks"] + ["cobblestone", "polished_andesite"]]
@@ -102,7 +103,9 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "door":"oak_door"}}
 # print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
 
-
+# Clear trees from build area
+util.clear_trees(worldSlice, buildRect, editor)
+# Build structures
 structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
 structures.build_well(biome_block_choice, buildRect, buildRect.middle, editor)
 structures.build_pyramid(buildRect, buildRect.middle, editor)
