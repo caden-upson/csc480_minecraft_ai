@@ -100,7 +100,8 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "fence":"oak_fence",
                                            "stairs":"oak_stairs",
                                            "slab":"oak_slab",
-                                           "door":"oak_door"}}
+                                           "door":"oak_door",
+                                           "leaves":"dark_oak_leaves",}}
 # print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
 
 # Clear trees from build area
@@ -108,4 +109,5 @@ util.clear_trees(worldSlice, buildRect, editor)
 # Build structures
 structures.build_cabin(biome_block_choice, buildRect, buildRect.middle, editor)
 structures.build_well(biome_block_choice, buildRect, buildRect.middle, editor)
+structures.build_tree(biome_block_choice, buildRect, buildRect.middle, editor)
 structures.build_pyramid(buildRect, buildRect.middle, editor)
