@@ -11,6 +11,9 @@ from gdpc import __url__, Editor, Block, Rect
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
 
+import random 
+from glm import ivec2
+from collections import defaultdict
 import structures
 import util
 
@@ -54,6 +57,8 @@ print(f"Build area end:    {tuple(buildArea.end)}")
 print(f"Build area last:   {tuple(buildArea.last)}") # Last is inclusive, end is exclusive.
 print(f"Build area center: {tuple(buildArea.center)}")
 
+
+
 print("Loading world slice...")
 buildRect = buildArea.toRect()
 worldSlice = editor.loadWorldSlice(buildRect)
@@ -90,22 +95,84 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "door":"oak_door",
                                            "leaves":"dark_oak_leaves",}}
 # print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
-# Build wall to highlight build area
-print("Building wall")
-util.build_wall(buildRect, heightmap, editor)
-# Clear trees from build area
-print("Clearing trees")
-util.clear_trees(worldSlice, buildRect, editor)
-# Build structures
-# 11x4x11
-print("Building Cabin")
-structures.build_cabin(biome_block_choice, buildRect.between((41,41), (52, 52)), buildRect.middle, editor)
-# 3x4x3
-print("Building Well")
-structures.build_well(biome_block_choice, buildRect.between((4,31), (7, 34)), buildRect.middle, editor)
-# 5xYx5
-print("Building Tree")
-structures.build_tree(biome_block_choice, buildRect.between((11,19), (16, 24)), buildRect.middle, editor)
-# 7x4x7
-print("Building Pyramid")
-structures.build_pyramid(buildRect, buildRect.between((3,12), (10, 19)), editor)
+
+# rect is defined as: 
+# offset, and size  (x z) 
+# buildRect:  Rect((-15, 24), (65, 65))
+'''
+Creates a Rect(), holding coordinates of where a building should be
+middle: middle location of the settlement 
+z_size: the x length of the settlement
+z_size: the z length of the settlement 
+TODO: Currently, buildings can clash into each other, needs to be fixed
+'''
+def create_building_location(middle: Rect, x_size=64, z_size=64):
+    max_x = x_size // 2
+    max_z = z_size // 2 
+    x_random_offset = randint(-max_x, max_x)
+    z_random_offset = randint(-max_z, max_z)
+
+    new_offset = (
+        middle.offset[0] + x_random_offset,
+        middle.offset[1] + z_random_offset
+    )
+
+    return Rect(new_offset, middle.size)
+    pass 
+
+
+'''
+Generates a settlement 
+returns a dictionary of building names to locations (as Rects)
+'''
+def generate_settlement(): 
+    # "BuildingName" : Ivec2()
+    middle_location = buildRect # use this to base off create_building_offset
+
+    # need an map of {"building name" : location } 
+    # where location: is a Rect created by create_building_offset
+    # for path finding
+    locations = defaultdict(lambda: "Building does not exist")
+
+    # Build wall to highlight build area
+    print("Building wall")
+    util.build_wall(buildRect, heightmap, editor)
+
+    # Clear trees from build area
+    print("Clearing trees")
+    util.clear_trees(worldSlice, buildRect, editor)
+    # Build structures
+    
+    # 11x4x11
+    # print("Building Cabin")
+    #structures.build_cabin(biome_block_choice, buildRect.between((41,41), (52, 52)), buildRect.middle, editor)
+    
+    # 3x4x3
+    print("Building Well")
+    loc = create_building_location(middle_location)
+    locations["well"] = loc
+    structures.build_well(biome_block_choice, loc, buildRect.middle, editor)
+    # 5xYx5
+    print("Building Tree")
+    loc = create_building_location(middle_location)
+    locations["tree"] = loc
+    structures.build_tree(biome_block_choice, loc, buildRect.middle, editor)
+    # 7x4x7
+    
+    print("Building Pyramid")
+    loc = create_building_location(middle_location)
+    locations["pyramid"] = loc
+    structures.build_pyramid(biome_block_choice, loc, buildRect.between((3,12), (10, 19)), editor)
+    return locations
+    pass
+
+
+'''
+Creates a road network between the buildings 
+TODO: After the settlement is created, pathfind 
+
+'''
+def road_network(locations): 
+    # TODO 
+    pass 
+building_locations = generate_settlement()

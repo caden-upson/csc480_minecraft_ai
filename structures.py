@@ -6,7 +6,7 @@ from glm import ivec2
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
     
-def build_pyramid(build_area: Rect, center_vector: ivec2, editor: Editor):
+def build_pyramid(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for structure
     foundation = build_area.centeredSubRect((7,7))
     # Load worldSlice to get the biomes as well as ground height
@@ -110,12 +110,6 @@ def build_pyramid(build_area: Rect, center_vector: ivec2, editor: Editor):
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
     height_max = height + 4 
-    # print("low_x_cord:", low_x_cord)
-    # print("high_x_cord:", high_x_cord)
-    # print("low_z_cord:", low_z_cord)
-    # print("high_z_cord:", high_z_cord)
-    # print("height:", height)
-    # print("height_max:", height_max)
 
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):
@@ -177,12 +171,6 @@ def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
     height_max = height + 4 
-    # print("low_x_cord:", low_x_cord)
-    # print("high_x_cord:", high_x_cord)
-    # print("low_z_cord:", low_z_cord)
-    # print("high_z_cord:", high_z_cord)
-    # print("height:", height)
-    # print("height_max:", height_max)
 
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):
@@ -191,7 +179,7 @@ def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
                 # Add y-value to 2D vector (only has x,z coordinates)
                 # print("Indices:", y - height, x - low_x_cord, z - low_z_cord)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
-        # print("Level ", y, " done!")
+        print("Level ", y, " done!")
     pass
 
 # Builds a basic 11x4x11 house using the build_area given
