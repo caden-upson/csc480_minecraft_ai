@@ -370,3 +370,47 @@ def get_opposing_corners(corners: list):
                     result.append(corner)
     return result
                 
+
+
+def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
+    # Create base for the swimming pool
+    foundation = build_area.centeredSubRect((8, 9))
+    # Load worldSlice to get the biomes as well as ground height
+    worldSlice = editor.loadWorldSlice(foundation)
+    print("World slice loaded!")
+    # Gets the ground height (the y value the highest block excluding leaves is located)
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+
+    # 2D array containing the blocks for each level of the swimming pool
+    schematic = [
+        [(["quartz_block"] * 9),
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        ["quartz_block"] + (["water"] * 7) + ["quartz_block"],
+        (["quartz_block"] * 9)]
+    ]
+
+    # Gets the two opposite corners of the rectangle
+    opposite_corners = get_opposing_corners(foundation.corners)
+    # Get bounds for loop
+    low_x_cord = min(opposite_corners[0].x, opposite_corners[1].x)
+    high_x_cord = max(opposite_corners[0].x, opposite_corners[1].x)
+    low_z_cord = min(opposite_corners[0].y, opposite_corners[1].y)
+    high_z_cord = max(opposite_corners[0].y, opposite_corners[1].y)
+    # Get ground height
+    height = heightmap[tuple((foundation.center) - foundation.offset)]
+    # How tall the structure will be
+    height_max = height + 1  # Swimming pool is only one block tall
+
+    for y in range(height, height_max):
+        print("y",y)
+        for x in range(low_x_cord, high_x_cord + 1):
+            print("x",x)
+            for z in range(low_z_cord, high_z_cord + 1):
+                (print("z",z))
+                # Get the ground height for the block on the outline
+                # Add y-value to 2D vector (only has x,z coordinates)
+                editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
