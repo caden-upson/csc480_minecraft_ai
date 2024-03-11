@@ -8,95 +8,107 @@ from gdpc.vector_tools import addY
     
 def build_pyramid(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for structure
-    foundation = build_area.centeredSubRect((7,7))
+    foundation = build_area.centeredSubRect((9,9))
     # Load worldSlice to get the biomes as well as ground height
     worldSlice = editor.loadWorldSlice(foundation)
     # print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    
+    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple(foundation.size - (foundation.size.x / 2, foundation.size.y / 2))]))
+    if biome == '':
+        biome = 'minecraft:plains'
+    plank = block_choice[biome]['slab']
+
     # 2D array containing the blocks for each level of the build
     schematic = [
                  [
-                 (["chiseled_sandstone"] + ["sandstone_stairs"] * 5 + ["chiseled_sandstone"]),
-                 (["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"]),
-                 (["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"]),
-                 (["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"]),
-                 (["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"]),
-                 (["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"]),
-                 (["chiseled_sandstone"] + ["sandstone_stairs"] * 5 + ["chiseled_sandstone"])
+                 [plank] * 9,
+                 ([plank] + ["chiseled_sandstone"] + ["sandstone_stairs"] * 5 + ["chiseled_sandstone"] + [plank]),
+                 ([plank] + ["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"] + [plank]),
+                 ([plank] + ["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"] + [plank]),
+                 ([plank] + ["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"] + [plank]),
+                 ([plank] + ["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"] + [plank]),
+                 ([plank] + ["sandstone_stairs"] + ["air"] * 5 + ["sandstone_stairs"] + [plank]),
+                 ([plank] + ["chiseled_sandstone"] + ["sandstone_stairs"] * 5 + ["chiseled_sandstone"] + [plank]),
+                 [plank] * 9,
+                 ],
+ 
+                 [
+                 ["air"] * 9,
+                 (["air"] + ["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"] + ["air"]),
+                 (["air"] * 2 + ["sandstone_stairs"] * 5 + ["air"] * 2),
+                 (["air"] * 2 + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"] * 2),
+                 (["air"] * 2 + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"] * 2),
+                 (["air"] * 2 + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"] * 2),
+                 (["air"] * 2 + ["sandstone_stairs"] * 5 + ["air"] * 2),
+                 (["air"] + ["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"] + ["air"]),
+                 ["air"] * 9
                  ],
 
                  [
-                 (["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"]),
-                 (["air"] + ["sandstone_stairs"] * 5 + ["air"]),
-                 (["air"] + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"]),
-                 (["air"] + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"]),
-                 (["air"] + ["sandstone_stairs"] + ["air"] * 3 + ["sandstone_stairs"] + ["air"]),
-                 (["air"] + ["sandstone_stairs"] * 5 + ["air"]),
-                 (["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"])
+                 ["air"] * 9,
+                 (["air"] + ["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"] + ["air"]),
+                 ["air"] * 9,
+                 (["air"] * 3 + ["sandstone_stairs"] * 3 + ["air"] * 3), 
+                 (["air"] * 3 + ["sandstone_stairs"] + ["gold_block"] + ["sandstone_stairs"] + ["air"] * 3),
+                 (["air"] * 3 + ["sandstone_stairs"] * 3 + ["air"] * 3), 
+                 ["air"] * 9,
+                 (["air"] + ["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"] + ["air"]),
+                 ["air"] * 9
                  ],
 
                  [
-                 (["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"]),
-                 ["air"] * 7,
-                 (["air"] * 2 + ["sandstone_stairs"] * 3 + ["air"] * 2), 
-                 (["air"] * 2 + ["sandstone_stairs"] + ["gold_block"] + ["sandstone_stairs"] + ["air"] * 2),
-                 (["air"] * 2 + ["sandstone_stairs"] * 3 + ["air"] * 2), 
-                 ["air"] * 7,
-                 (["chiseled_sandstone"] + ["air"] * 5 + ["chiseled_sandstone"])
-                 ],
-
-                 [
-                 (["gilded_blackstone"] + ["air"] * 5 + ["gilded_blackstone"]),
-                 ["air"] * 7,
-                 ["air"] * 7,
-                 ["air"] * 7,
-                 ["air"] * 7,
-                 ["air"] * 7,
-                 (["gilded_blackstone"] + ["air"] * 5 + ["gilded_blackstone"])
+                 ["air"] * 9, 
+                 (["air"] + ["gilded_blackstone"] + ["air"] * 5 + ["gilded_blackstone"] + ["air"]),
+                 ["air"] * 9,
+                 ["air"] * 9,
+                 ["air"] * 9,
+                 ["air"] * 9,
+                 ["air"] * 9,
+                 (["air"] + ["gilded_blackstone"] + ["air"] * 5 + ["gilded_blackstone"] + ["air"]),
+                 ["air"] * 9
                  ]
                 ]
                                 
     rotations = [
                  [
-                 ([None] + ["east"] * 5 + [None]),
-                 (["south"] + [None] * 5 + ["north"]),
-                 (["south"] + [None] * 5 + ["north"]),
-                 (["south"] + [None] * 5 + ["north"]),
-                 (["south"] + [None] * 5 + ["north"]),
-                 (["south"] + [None] * 5 + ["north"]),
-                 ([None] + ["west"] * 5 + [None])
+                 [None] * 9,
+                 ([None] * 2 + ["east"] * 5 + [None] * 2),
+                 ([None] + ["south"] + [None] * 5 + ["north"] + [None]),
+                 ([None] + ["south"] + [None] * 5 + ["north"] + [None]),
+                 ([None] + ["south"] + [None] * 5 + ["north"] + [None]),
+                 ([None] + ["south"] + [None] * 5 + ["north"] + [None]),
+                 ([None] + ["south"] + [None] * 5 + ["north"] + [None]),
+                 ([None] * 2 + ["west"] * 5 + [None] * 2),
+                 [None] * 9
                  ],
                 
                  [
-                 [None] * 7,
-                 ([None] + ["east"] * 5 + [None]),
-                 ([None] + ["south"] + [None] * 3 + ["north"] + [None]),
-                 ([None] + ["south"] + [None] * 3 + ["north"] + [None]),
-                 ([None] + ["south"] + [None] * 3 + ["north"] + [None]),
-                 ([None] + ["west"] * 5 + [None]),
-                 [None] * 7
+                 [None] * 9,
+                 [None] * 9,
+                 ([None] * 2 + ["east"] * 5 + [None] * 2),
+                 ([None] * 2 + ["south"] + [None] * 3 + ["north"] + [None] * 2),
+                 ([None] * 2 + ["south"] + [None] * 3 + ["north"] + [None] * 2),
+                 ([None] * 2 + ["south"] + [None] * 3 + ["north"] + [None] * 2),
+                 ([None] * 2 + ["west"] * 5 + [None] * 2),
+                 [None] * 9,
+                 [None] * 9
                  ],
                     
                  [
-                 [None] * 7,
-                 [None] * 7,
-                 ([None] * 2 + ["east"] * 3 + [None] * 2),
-                 ([None] * 2 + ["south"] + [None] + ["north"] + [None] * 2),
-                 ([None] * 2 + ["west"] * 3 + [None] * 2),
-                 [None] * 7,
-                 [None] * 7
+                 [None] * 9,
+                 [None] * 9,
+                 [None] * 9,
+                 ([None] * 3 + ["east"] * 3 + [None] * 3),
+                 ([None] * 3 + ["south"] + [None] + ["north"] + [None] * 3),
+                 ([None] * 3 + ["west"] * 3 + [None] * 3),
+                 [None] * 9,
+                 [None] * 9,
+                 [None] * 9
                  ],
 
-                 [
-                 [None] * 7,
-                 [None] * 7,
-                 [None] * 7,
-                 [None] * 7,
-                 [None] * 7,
-                 [None] * 7,
-                 [None] * 7
-                 ]
+                 [[None] * 9] * 9
                 ]
                  
     # Gets the two opposite corners of the rectangle

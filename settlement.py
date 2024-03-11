@@ -134,6 +134,7 @@ def generate_settlement():
     # for path finding
     locations = defaultdict(lambda: "Building does not exist")
 
+<<<<<<< Updated upstream
     # Build wall to highlight build area
     print("Building wall")
     util.build_wall(buildRect, heightmap, editor)
@@ -159,8 +160,8 @@ def generate_settlement():
     loc = create_building_location(middle_location)
     locations["tree"] = loc
     structures.build_tree(biome_block_choice, loc, buildRect.middle, editor)
-    # 7x4x7
-    
+
+    # 9x4x9
     print("Building Pyramid")
     loc = create_building_location(middle_location)
     locations["pyramid"] = loc
