@@ -166,10 +166,15 @@ def generate_settlement():
     locations["pyramid"] = loc
     structures.build_pyramid(biome_block_choice, loc, buildRect.between((3,12), (10, 19)), editor)
     
-    print("Building Swimming Pool")
+    # print("Building Swimming Pool")
+    # loc = create_building_location(middle_location)
+    # locations["pool"] = loc
+    # structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
+   
+    print("Building Hut")
     loc = create_building_location(middle_location)
-    locations["pool"] = loc
-    structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
+    locations["hut"] = loc
+    structures.build_hut(biome_block_choice, loc, buildRect.middle, editor)
     return locations
     pass
 
