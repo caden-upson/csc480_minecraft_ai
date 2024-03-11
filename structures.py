@@ -380,9 +380,23 @@ def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ive
     print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    
+    # Get the biome at the locally centered block
+    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple(foundation.size - (foundation.size.x / 2, foundation.size.y / 2))]))
+    if biome == '':
+        biome = 'minecraft:plains'
+    fence = block_choice[biome]["fence"]
 
     # 2D array containing the blocks for each level of the swimming pool
     schematic = [
+        [(["quartz_block"] * 10),
+        (["quartz_block"] * 10),
+        (["quartz_block"] * 10),
+        (["quartz_block"] * 10),
+        (["quartz_block"] * 10),
+        (["quartz_block"] * 10),
+        (["quartz_block"] * 10)],
+        
         [(["quartz_block"] * 9)+ ["air"],
         ["quartz_block"] + (["water"] * 7) + ["quartz_block"] + ["air"],
         ["quartz_block"] + (["water"] * 7) + ["quartz_block"] + ["quartz_stairs"],
@@ -391,22 +405,22 @@ def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ive
         ["quartz_block"] + (["water"] * 7) + ["quartz_block"] + ["air"],
         (["quartz_block"] * 9) + ["air"]],
         
-        [(["dark_oak_fence"]*9) + ["air"],
-        ["dark_oak_fence"] + (["air"]*9),
-        ["dark_oak_fence"] + (["air"]*9),
-        ["dark_oak_fence"] + (["air"]*9),
-        ["dark_oak_fence"] + (["air"]*9),
-        ["dark_oak_fence"] + (["air"]*9),
-        (["dark_oak_fence"]*9) + ["air"]
+        [([fence]*9) + ["air"],
+        [fence] + (["air"]*9),
+        [fence] + (["air"]*9),
+        [fence] + (["air"]*9),
+        [fence] + (["air"]*9),
+        [fence] + (["air"]*9),
+        ([fence]*9) + ["air"]
         ],
         
-        [["dark_oak_fence"] + (["air"] * 7) + ["dark_oak_fence"] + ["air"],
+        [[fence] + (["air"] * 7) + [fence] + ["air"],
         (["air"]*10),
         (["air"]*10),
         (["air"]*10),
         (["air"]*10),
         (["air"]*10),
-        ["dark_oak_fence"] + (["air"] * 7) + ["dark_oak_fence"] + ["air"]
+        [fence] + (["air"] * 7) + [fence] + ["air"]
         ],
 
         
@@ -431,7 +445,7 @@ def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ive
     # Get ground height
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
-    height_max = height + 5  # Swimming pool is only one block tall
+    height_max = height + 4  # Swimming pool is only one block tall
 
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):

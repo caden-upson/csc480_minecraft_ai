@@ -144,8 +144,10 @@ def generate_settlement():
     # Build structures
     
     # 11x4x11
-    # print("Building Cabin")
-    #structures.build_cabin(biome_block_choice, buildRect.between((41,41), (52, 52)), buildRect.middle, editor)
+    print("Building Cabin")
+    loc = create_building_location(middle_location)
+    locations["cabin"] = loc
+    structures.build_cabin(biome_block_choice, loc, buildRect.middle, editor)
     
     # 3x4x3
     print("Building Well")
