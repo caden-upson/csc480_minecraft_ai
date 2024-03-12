@@ -15,7 +15,7 @@ def build_pyramid(block_choice: dict, build_area: Rect, center_vector: ivec2, ed
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
     print("Biome = ", biome)
     if biome == '':
         biome = 'minecraft:plains'
@@ -148,7 +148,7 @@ def build_well(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     # Get the biome at the locally centered block
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
     if biome == '':
         biome = 'minecraft:plains'
     plank = block_choice[biome]['plank']
@@ -206,7 +206,7 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     # Get the biome at the locally centered block
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
     if biome == '':
         biome = 'minecraft:plains'
     # Get wood types based on biome
@@ -311,7 +311,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     # Get the biome at the locally centered block
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
     if biome == '':
         biome = 'minecraft:plains'
     # Get wood types based on biome
@@ -393,7 +393,7 @@ def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ive
     print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
 
     if biome == '':
         biome = 'minecraft:plains'
@@ -480,7 +480,7 @@ def build_hut(block_choice: dict, build_area: Rect, center_vector: ivec2, editor
     print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple((0,0))]))
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
 
     if biome == '':
         biome = 'minecraft:plains'

@@ -67,7 +67,7 @@ print("World slice loaded!")
 heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     
 center = buildRect.center
-print("Biome = ", worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple((0, 0))])))
+print("Biome = ", worldSlice.getBiomeGlobal(addY(buildRect.middle, heightmap[tuple((0, 0))])))
 # for x in range(0, center.x + 32):
 #     for z in range(0, center.y + 32):
 #         editor.placeBlock((x, height, z), Block("air"))

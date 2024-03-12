@@ -41,12 +41,17 @@ def remove_tree(editor: Editor, position: Vec3iLike):
 def remove_around_base(editor: Editor, position: Vec3iLike):
     if (editor.getBlock(position - (1, 0, 0)).id.endswith('log')):
         editor.placeBlock(position - (1, 0, 0), Block("air"))
+        remove_around_base(editor, position - (0, 1, 0))
     if (editor.getBlock(position - (0, 0, 1)).id.endswith('log')):
         editor.placeBlock(position - (0, 0, 1), Block("air"))
+        remove_around_base(editor, position - (0, 1, 0))
     if (editor.getBlock(position + (1, 0, 0)).id.endswith('log')):
         editor.placeBlock(position - (1, 0, 0), Block("air"))
+        remove_around_base(editor, position - (0, 1, 0))
     if (editor.getBlock(position - (0, 0, 1)).id.endswith('log')):
         editor.placeBlock(position + (0, 0, 1), Block("air"))
+        remove_around_base(editor, position - (0, 1, 0))
+    
         
 # Builds a wall around the build area
 def build_wall(buildRect: Rect, heightmap: dict, editor: Editor):
