@@ -32,8 +32,21 @@ def remove_tree(editor: Editor, position: Vec3iLike):
     # Remove if the block is a leaf or a log, replace with air block
     while (editor.getBlock(position).id.endswith('log') or editor.getBlock(position).id.endswith('leaves')):
         editor.placeBlock(position, Block("air"))
+        # In case tree has a weird structure
+        remove_around_base(editor, position)
         # Decrement y-value
         position = position - (0, 1, 0)
+    
+# For removing logs around base
+def remove_around_base(editor: Editor, position: Vec3iLike):
+    if (editor.getBlock(position - (1, 0, 0)).id.endswith('log')):
+        editor.placeBlock(position - (1, 0, 0), Block("air"))
+    if (editor.getBlock(position - (0, 0, 1)).id.endswith('log')):
+        editor.placeBlock(position - (0, 0, 1), Block("air"))
+    if (editor.getBlock(position + (1, 0, 0)).id.endswith('log')):
+        editor.placeBlock(position - (1, 0, 0), Block("air"))
+    if (editor.getBlock(position - (0, 0, 1)).id.endswith('log')):
+        editor.placeBlock(position + (0, 0, 1), Block("air"))
         
 # Builds a wall around the build area
 def build_wall(buildRect: Rect, heightmap: dict, editor: Editor):
