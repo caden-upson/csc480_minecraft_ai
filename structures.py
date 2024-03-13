@@ -588,6 +588,79 @@ def build_hut(block_choice: dict, build_area: Rect, center_vector: ivec2, editor
 
 
 
+def build_farm(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
+    # Create base for the swimming pool
+    foundation = build_area.centeredSubRect((7, 9))
+    # Load worldSlice to get the biomes as well as ground height
+    worldSlice = editor.loadWorldSlice(foundation)
+    print("World slice loaded!")
+    # Gets the ground height (the y value the highest block excluding leaves is located)
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
+
+    if biome == '':
+        biome = 'minecraft:plains'
+
+    log = block_choice[biome]['log']
+
+    # 2D array containing the blocks for each level of the swimming pool
+    schematic = [
+        [
+            (["grass_block"] * 9),
+            (["grass_block"] * 9),
+            (["grass_block"] * 9),
+            (["grass_block"] * 9),
+            (["grass_block"] * 9),
+            (["grass_block"] * 9),
+            (["grass_block"] * 9)
+
+        ],
+
+        [
+            ([log] * 9),
+            [log] + (["farmland"] * 7) + [log],
+            [log] + (["farmland"] * 7) + [log],
+            [log] + (["water"] * 7) + [log],
+            [log] + (["farmland"] * 7) + [log],
+            [log] + (["farmland"] * 7) + [log],
+            ([log] * 9)
+        ],
+
+        [
+            (["air"] * 9),
+            ["air"] + (["wheat"] * 7) + ["air"],
+            ["air"] + (["wheat"] * 7) + ["air"],
+            (["air"] * 9),
+            ["air"] + (["wheat"] * 7) + ["air"],
+            ["air"] + (["wheat"] * 7) + ["air"],
+            (["air"] * 9)
+        ]
+
+
+
+    ]
+
+    # Gets the two opposite corners of the rectangle
+    opposite_corners = get_opposing_corners(foundation.corners)
+    # Get bounds for loop
+    low_x_cord = min(opposite_corners[0].x, opposite_corners[1].x)
+    high_x_cord = max(opposite_corners[0].x, opposite_corners[1].x)
+    low_z_cord = min(opposite_corners[0].y, opposite_corners[1].y)
+    high_z_cord = max(opposite_corners[0].y, opposite_corners[1].y)
+    # Get ground height
+    height = heightmap[tuple((foundation.center) - foundation.offset)]
+    # How tall the structure will be
+    height_max = height + 3
+
+    for y in range(height, height_max):
+        for x in range(low_x_cord, high_x_cord + 1):
+            for z in range(low_z_cord, high_z_cord + 1):
+                # Get the ground height for the block on the outline
+                # Add y-value to 2D vector (only has x,z coordinates)
+                editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
+
+
+
 def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for the swimming pool
     foundation = build_area.centeredSubRect((9, 9))
@@ -596,46 +669,10 @@ def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, e
     print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-
-    biome = worldSlice.getBiome(addY(foundation.middle, heightmap[tuple(foundation.size - (foundation.size.x / 2, foundation.size.y / 2))]))
     biome = worldSlice.getBiomeGlobal(addY(foundation.middle, heightmap[tuple((0,0))]))
 
     if biome == '':
         biome = 'minecraft:plains'
-
-
-
-    # 2D array containing the blocks for each level of the "farmland"
-    schematic = [
-        [(["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9)],
-
-        [(["dirt"] * 9),
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["farmland"] * 7) + ["air"] + ["dirt"],
-         (["dirt"] * 9)],
-
-        [(["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9),
-         (["dirt"] * 9)]]
 
     plank = block_choice[biome]['plank']
     leaves = block_choice[biome]['leaves']
@@ -714,9 +751,9 @@ def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, e
             (["air"] * 9)
         ]
 
-        
 
-        
+
+
 
     ]
 
@@ -799,7 +836,6 @@ def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2
         ["air"] + (["stone_slab"] * 5)
         ]
 
-        
 
 
     ]
@@ -821,14 +857,4 @@ def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2
             for z in range(low_z_cord, high_z_cord + 1):
                 # Get the ground height for the block on the outline
                 # Add y-value to 2D vector (only has x,z coordinates)
-
-                if schematic[y - height][x - low_x_cord][z - low_z_cord] == ["farmland"]: 
-                    editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord], {"moisture": 7}))
-                else: 
-                    editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord], {}))
-    # Plant crops in the "farmland"
-    for y in range(height, height_max):
-      for x in range(low_x_cord + 1, high_x_cord):
-          for z in range(low_z_cord + 1, high_z_cord):
-              editor.placeBlock(addY((x, z), height + 1), Block(['seed']))
-              editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
+                editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 

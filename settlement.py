@@ -492,7 +492,7 @@ def generate_settlement():
 
     # Clear trees from build area
     print("Clearing trees")
-    #util.clear_trees(worldSlice, buildRect, editor)
+    util.clear_trees(worldSlice, buildRect, editor)
     # Build structures
     
     # 11x4x11
@@ -519,9 +519,26 @@ def generate_settlement():
     # locations["pool"] = loc
     # structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
 
+     #7x7
     print("Building Hut")
     loc = create_building_location(middle_location, locations, "hut")
-    structures.build_hut(biome_block_choice, loc,  buildRect.middle, editor)
+    structures.build_hut(biome_block_choice, loc, buildRect.middle, editor)
+
+    #7x9
+    print("Building Farm")
+    loc = create_building_location(middle_location, locations, "farm")
+    structures.build_farm(biome_block_choice, loc, buildRect.middle, editor)
+
+    #9x9
+    print("Building Fountain")
+    loc = create_building_location(middle_location, locations, "fountain")
+    structures.build_fountain(biome_block_choice, loc, buildRect.middle, editor)
+
+
+    #5x6
+    print("Building Small House")
+    loc = create_building_location(middle_location, locations, "small_house")
+    structures.build_small_house(biome_block_choice, loc, buildRect.middle, editor)
 
     return locations
 
