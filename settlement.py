@@ -17,6 +17,8 @@ from collections import defaultdict
 import structures
 import util
 import biome
+import road
+import astar
 
 # Create an editor object.
 # The Editor class provides a high-level interface to interact with the Minecraft world.
@@ -127,7 +129,7 @@ def generate_settlement():
 
     # Clear trees from build area
     print("Clearing trees")
-    #util.clear_trees(worldSlice, buildRect, editor)
+    util.clear_trees(worldSlice, buildRect, editor)
     # Build structures
     
     # 11x4x11
@@ -160,7 +162,26 @@ def generate_settlement():
 
     return locations
 
-
+worldSlice = editor.loadWorldSlice(buildRect)
 building_locations = generate_settlement()
-print(building_locations)
-# road.generate_roads(building_locations, editor)
+heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+filtered_dict = {key: value for key, value in building_locations.items() if key != 'tree'}
+# filtered_dict = {"cabin" : (-233, 84, 270), "well" : (-243, 70, 249)}
+start_point = (filtered_dict["well"][0]-3, filtered_dict["well"][1], filtered_dict["well"][2]-3)
+goal_point = (filtered_dict["cabin"][0]-3, filtered_dict["cabin"][1], filtered_dict["cabin"][2]-3)
+path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
+print("Astar done")
+for block in path:
+    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
+start_point = (filtered_dict["well"][0]-3, filtered_dict["well"][1], filtered_dict["well"][2]-3)
+goal_point = (filtered_dict["hut"][0]-7, filtered_dict["hut"][1], filtered_dict["hut"][2]-7)
+path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
+print("Astar done")
+for block in path:
+    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
+start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2]-5)
+goal_point = (filtered_dict["hut"][0]-7, filtered_dict["hut"][1], filtered_dict["hut"][2]-7)
+path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
+print("Astar done")
+for block in path:
+    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
