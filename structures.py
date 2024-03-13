@@ -635,7 +635,7 @@ def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, e
          (["dirt"] * 9),
          (["dirt"] * 9),
          (["dirt"] * 9),
-         (["dirt"] * 9)]
+         (["dirt"] * 9)]]
 
     plank = block_choice[biome]['plank']
     leaves = block_choice[biome]['leaves']
@@ -827,7 +827,8 @@ def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2
                 else: 
                     editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord], {}))
     # Plant crops in the "farmland"
-    for x in range(low_x_cord + 1, high_x_cord):
-        for z in range(low_z_cord + 1, high_z_cord):
-            editor.placeBlock(addY((x, z), height + 1), Block(['seed']))
-                editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
+    for y in range(height, height_max):
+      for x in range(low_x_cord + 1, high_x_cord):
+          for z in range(low_z_cord + 1, high_z_cord):
+              editor.placeBlock(addY((x, z), height + 1), Block(['seed']))
+              editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 

@@ -488,7 +488,7 @@ def generate_settlement():
 
     # Build wall to highlight build area
     print("Building wall")
-    # util.build_wall(buildRect, heightmap, editor)
+    util.build_wall(buildRect, heightmap, editor)
 
     # Clear trees from build area
     print("Clearing trees")
