@@ -14,8 +14,8 @@ from queue import PriorityQueue
 import heapq
 import math
 
-def manhattan_distance_3d(point1, point2):
-    return abs(point1[0] - point2[0]) + abs(point1[1] - point2[1]) + abs(point1[2] - point2[2])
+def manhattan_distance_2d(point1, point2):
+    return abs(point1[0] - point2[0]) + abs(point1[2] - point2[2])
 
 def neighbors(point):
     x, y, z = point
@@ -26,7 +26,7 @@ def a_star(start, goal, forbidden):
     heapq.heappush(open_set, (0, start))
     came_from = {}
     g_score = {start: 0}
-    f_score = {start: manhattan_distance_3d(start, goal)}
+    f_score = {start: manhattan_distance_2d(start, goal)}
 
     while open_set:
         _, current = heapq.heappop(open_set)
@@ -45,7 +45,7 @@ def a_star(start, goal, forbidden):
               if tentative_g_score < g_score.get(neighbor, float('inf')):
                   came_from[neighbor] = current
                   g_score[neighbor] = tentative_g_score
-                  f_score[neighbor] = tentative_g_score + manhattan_distance_3d(neighbor, goal)
+                  f_score[neighbor] = tentative_g_score + manhattan_distance_2d(neighbor, goal)
                   heapq.heappush(open_set, (f_score[neighbor], neighbor))
 
     return None
