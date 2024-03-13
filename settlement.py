@@ -437,22 +437,39 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
 '''
 Creates a Rect(), holding coordinates of where a building should be
 middle: middle location of the settlement 
+locations: a dictionary holding: { building_name : Rect(location) }
 z_size: the x length of the settlement
 z_size: the z length of the settlement 
 TODO: Currently, buildings can clash into each other, needs to be fixed
 '''
-def create_building_location(middle: Rect, x_size=64, z_size=64):
-    max_x = x_size // 2
-    max_z = z_size // 2 
-    x_random_offset = randint(-max_x, max_x)
-    z_random_offset = randint(-max_z, max_z)
+spots_taken = set()
+def create_building_location(middle: Rect, locations: defaultdict, building_name, x_size=64, z_size=64):
+    
+    # This is so it does not build ON the wall 
+    blocks_away_from_wall = 12
+    max_x = (x_size // 2) - blocks_away_from_wall 
+    max_z = (z_size // 2) - blocks_away_from_wall
+
+    # because (1, 2) and (2, 2) are unique, buildings can build on each other (bad)
+    # this will fix it
+    multiples_of = 8 
+    x_random_offset = randint(-max_x // 8, max_x // 8) * 8
+    z_random_offset = randint(-max_z // 8, max_z // 8) * 8
 
     new_offset = (
         middle.offset[0] + x_random_offset,
         middle.offset[1] + z_random_offset
     )
+    locations[building_name] = new_offset
 
-    return Rect(new_offset, middle.size)
+    # Checks if location is taken already 
+    if new_offset in spots_taken: 
+        return create_building_location(middle, locations, building_name)
+    else: 
+        loc = Rect(new_offset, middle.size)
+        locations[building_name] = loc 
+        spots_taken.add(new_offset) 
+        return loc 
     pass 
 
 
@@ -468,77 +485,64 @@ def generate_settlement():
     # where location: is a Rect created by create_building_offset
     # for path finding
     locations = defaultdict(lambda: "Building does not exist")
-    
+
     # Build wall to highlight build area
     print("Building wall")
-    util.build_wall(buildRect, heightmap, editor)
+    # util.build_wall(buildRect, heightmap, editor)
 
     # Clear trees from build area
     print("Clearing trees")
-    util.clear_trees(worldSlice, buildRect, editor)
+    #util.clear_trees(worldSlice, buildRect, editor)
     # Build structures
     
     # 11x4x11
     print("Building Cabin")
-    loc = create_building_location(middle_location)
-    locations["cabin"] = loc
+    loc = create_building_location(middle_location, locations, "cabin")
     structures.build_cabin(biome_block_choice, loc, buildRect.middle, editor)
     
     # 3x4x3
     print("Building Well")
-    loc = create_building_location(middle_location)
-    locations["well"] = loc
+    loc = create_building_location(middle_location, locations, "well")
     structures.build_well(biome_block_choice, loc, buildRect.middle, editor)
     # 5xYx5
     print("Building Tree")
-    loc = create_building_location(middle_location)
-    locations["tree"] = loc
+    loc = create_building_location(middle_location, locations, "tree")
     structures.build_tree(biome_block_choice, loc, buildRect.middle, editor)
 
     # 9x4x9
     print("Building Pyramid")
-    loc = create_building_location(middle_location)
-    locations["pyramid"] = loc
+    loc = create_building_location(middle_location, locations, "pyramid")
     structures.build_pyramid(biome_block_choice, loc, buildRect.between((3,12), (10, 19)), editor)
-    
+
     # print("Building Swimming Pool")
     # loc = create_building_location(middle_location)
     # locations["pool"] = loc
     # structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
-   
-    #7x7
+
     print("Building Hut")
-    loc = create_building_location(middle_location)
-    locations["hut"] = loc
-    structures.build_hut(biome_block_choice, loc, buildRect.middle, editor)
+    loc = create_building_location(middle_location, locations, "hut")
+    structures.build_hut(biome_block_choice, loc,  buildRect.middle, editor)
 
-    #7x9
-    print("Building Farm")
-    loc = create_building_location(middle_location)
-    locations["farm"] = loc
-    structures.build_farm(biome_block_choice, loc, buildRect.middle, editor)
-
-    #9x9
-    print("Building Fountain")
-    loc = create_building_location(middle_location)
-    locations["fountain"] = loc
-    structures.build_fountain(biome_block_choice, loc, buildRect.middle, editor)
-
-
-    #5x6
-    print("Building Small House")
-    loc = create_building_location(middle_location)
-    locations["small_house"] = loc
-    structures.build_small_house(biome_block_choice, loc, buildRect.middle, editor)
     return locations
 
 
 '''
 Creates a road network between the buildings 
 TODO: After the settlement is created, pathfind 
-
+Access the points by:
+class Rect
+    _offset: ivec2, where first coodinate is x, second is z 
+    _size:   ivec2
 '''
-def road_network(locations): 
+
+def generate_roads(locations): 
+    cabin_location = locations['cabin']
+    # access the points by: 
+    cabin_location.offset
+    # access points using 
     # TODO 
     pass 
 building_locations = generate_settlement()
+print(building_locations)
+#defaultdict(<function generate_settlement.<locals>.<lambda> at 0x28a2f32e0>, {'cabin': Rect((1046, -245), (65, 65)), 'well': Rect((1014, -269), (65, 65)), 'tree': Rect((1022, -253), (65, 65)), 'pyramid': Rect((1022, -245), (65, 65)), 'hut': Rect((1046, -253), (65, 65))})
+generate_roads(building_locations)
