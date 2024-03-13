@@ -298,8 +298,7 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
         #print("Level ", y, " done!")
-    return (foundation.middle.x, height, y)
-
+    return (foundation.middle.x, height, foundation.middle.y)
 #build a tree of variable height
 def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for structure
@@ -369,8 +368,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
         # print("Level ", y, " done!")
-    return (foundation.middle.x, height, y)
-            
+    return (foundation.middle.x, height, foundation.middle.y)            
     
 # Gets the opposite corners of the rectangle object
 def get_opposing_corners(corners: list):
@@ -470,8 +468,7 @@ def build_swimming_pool(block_choice: dict, build_area: Rect, center_vector: ive
                 # Get the ground height for the block on the outline
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
-    return (foundation.middle.x, height, y)
-
+    return (foundation.middle.x, height, foundation.middle.y)
 
 def build_hut(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for the swimming pool
@@ -585,8 +582,7 @@ def build_hut(block_choice: dict, build_area: Rect, center_vector: ivec2, editor
                 # Get the ground height for the block on the outline
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
-
-
+    return (foundation.middle.x, height, foundation.middle.y)
 
 
 def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
@@ -734,7 +730,7 @@ def build_fountain(block_choice: dict, build_area: Rect, center_vector: ivec2, e
                 # Get the ground height for the block on the outline
                 # Add y-value to 2D vector (only has x,z coordinates)
                 editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
-    return (foundation.middle.x, height, y)
+    return (foundation.middle.x, height, foundation.middle.y)
 
 
 def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
@@ -793,12 +789,7 @@ def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2
         ["air"] + (["stone_slab"] * 5),
         ["air"] + (["stone_slab"] * 5),
         ["air"] + (["stone_slab"] * 5)
-        ]
-
-        
-
-
-    ]
+        ]]
 
     # Gets the two opposite corners of the rectangle
     opposite_corners = get_opposing_corners(foundation.corners)
@@ -828,4 +819,4 @@ def build_small_house(block_choice: dict, build_area: Rect, center_vector: ivec2
           for z in range(low_z_cord + 1, high_z_cord):
               editor.placeBlock(addY((x, z), height + 1), Block(['seed']))
               editor.placeBlock(addY((x, z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord])) 
-    return (foundation.middle.x, height, y)
+    return (foundation.middle.x, height, foundation.middle.y)
