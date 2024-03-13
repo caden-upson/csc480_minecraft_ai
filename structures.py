@@ -299,13 +299,14 @@ def build_cabin(block_choice: dict, build_area: Rect, center_vector: ivec2, edit
                 editor.placeBlock(addY((x,z), y), Block(schematic[y - height][x - low_x_cord][z - low_z_cord]))
         #print("Level ", y, " done!")
     return (foundation.middle.x, height, foundation.middle.y)
+
 #build a tree of variable height
 def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, editor: Editor):
     # Create base for structure
-    foundation = build_area.centeredSubRect((5,5))
+    foundation = build_area.centeredSubRect((5,8))
     # Load worldSlice to get the biomes as well as ground height
     worldSlice = editor.loadWorldSlice(foundation)
-    treeHeight = randint(2, 5)
+    # treeHeight = randint(2, 5)
     # print("World slice loaded!")
     # Gets the ground height (the y value the highest block excluding leaves is located)
     # Returns a 2D 11x11 array for the y ground value of each block in the rectangle
@@ -315,38 +316,74 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     if biome == '':
         biome = 'minecraft:plains'
     # Get wood types based on biome
-    log = block_choice[biome]['log']
+    log = block_choice[biome]['wood']
     leaves = block_choice[biome]['leaves']
     # 2D array containing the blocks for each level of the build
-    schematic = []
-    for block in range(0, treeHeight):
-        schematic.append(
-        [(["air"] * 5), 
-         (["air"] * 5), 
-         (["air"] * 2) + [log] + (["air"] * 2), 
-         (["air"] * 5), 
-         (["air"] * 5)])
+    schematic = [
+        [
+            ["air"] * 8,
+            (["air"] * 3 + [log] + ["air"] * 4),
+            (["air"] * 2 + [log] * 4 + ["air"] * 2),
+            (["air"] * 4 + [log] + ["air"] * 3),
+            ["air"] * 8
+        ],
 
-    rest = [        
-        [([leaves] * 5), 
-         ([leaves] * 5), 
-         ([leaves] * 2) + [log] + ([leaves] * 2), 
-         ([leaves] * 5), 
-         ([leaves] * 5)],
+        [
+            ["air"] * 8,
+            (["air"] * 3 + [log] + ["air"] * 4),
+            (["air"] * 3 + [log] * 2 + ["air"] * 3),
+            ["air"] * 8,
+            ["air"] * 8
+        ],
 
-        [([leaves] * 5), 
-         ([leaves] * 5), 
-         ([leaves] * 2) + [log] + ([leaves] * 2), 
-         ([leaves] * 5), 
-         ([leaves] * 5)],
+        [
+            ["air"] * 8,
+            ["air"] * 8,
+            (["air"] * 3 + [log] * 2 + ["air"] * 3),
+            ["air"] * 8,
+            ["air"] * 8
+        ],
 
-        [(["air"] * 5), 
-         ["air"] + ([leaves] * 3) + ["air"],  
-         ["air"] + ([leaves] * 3) + ["air"],
-         ["air"] + ([leaves] * 3) + ["air"],
-         (["air"] * 5)]
+        [
+            ["air"] * 8,
+            ["air"] * 8,
+            (["air"] * 2 + [log] * 2 + ["air"] * 4),
+            ["air"] * 8,
+            ["air"] * 8
+        ],
+
+        [
+            ["air"] * 8,
+            (["air"] + [leaves] * 4 + ["air"] * 3),
+            ([leaves] + [log] * 2 + [leaves] * 3 + ["air"] * 2),
+            (["air"] + [leaves] * 4 + ["air"] * 3),
+            ["air"] * 8
+        ],
+
+        [
+            (["air"] * 4 + [leaves] + ["air"] * 3),
+            (["air"] * 2 + [leaves] * 4 + ["air"] * 2),
+            (["air"] + [leaves] * 2 + [log] * 2 + [leaves] * 2 + ["air"]),
+            (["air"] * 2 + [leaves] * 5 + ["air"] * 1),
+            ["air"] * 8
+        ],
+
+        [
+            (["air"] * 3 + [leaves] * 4 + ["air"]),
+            (["air"] * 2 + [leaves] * 6),
+            (["air"] * 2 + [leaves] * 6),
+            (["air"] * 3 + [leaves] * 5),
+            (["air"] * 3 + [leaves] * 3 + ["air"] * 2),
+        ],
+
+        [
+            ["air"] * 8,
+            (["air"] * 4 + [leaves] * 3 + ["air"]),
+            (["air"] * 3 + [leaves] * 4 + ["air"]),
+            (["air"] * 4 + [leaves] + ["air"] + [leaves] + ["air"]),
+            ["air"] * 8,
+        ]
     ]
-    schematic.extend(rest)
 
     # Gets the two opposite corners of the rectangle
     opposite_corners = get_opposing_corners(foundation.corners)
@@ -358,8 +395,7 @@ def build_tree(block_choice: dict, build_area: Rect, center_vector: ivec2, edito
     # Get ground height
     height = heightmap[tuple((foundation.center) - foundation.offset)]
     # How tall the structure will be
-    # print(treeHeight)
-    height_max = height + 3 + treeHeight
+    height_max = height + 8
     # Loop through every coordinate (5 is the maximum height of the structure)
     for y in range(height, height_max):
         for x in range(low_x_cord, high_x_cord + 1):
