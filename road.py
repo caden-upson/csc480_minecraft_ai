@@ -8,12 +8,40 @@ from gdpc import __url__, Editor, Block, Rect
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
 
+import settlement
+
+
 # Define a function to calculate the Manhattan distance between two points
 def manhattan_distance(point1, point2):
     return abs(point1.x - point2.x) + abs(point1.y - point2.y)
 
+def calculate_connections(buildings, threshold):
+    connections = {}
+    for building1, coord1 in buildings.items():
+        connections[building1] = []
+        for building2, coord2 in buildings.items():
+            if building1 != building2 and manhattan_distance(coord1._offset, coord2._offset) <= threshold:
+                connections[building1].append(building2)
+    return connections
+
+def getY(build_area: Rect, editor=Editor): 
+    foundation = build_area.centeredSubRect((1, 1))
+    # Load worldSlice to get the biomes as well as ground height
+    worldSlice = editor.loadWorldSlice(foundation)
+    heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
+    #ground height 
+    height = heightmap[tuple((foundation.center) - foundation.offset)]
+    return height 
+
 # Implement the A* algorithm
-def astar(graph, start, goal):
+def astar(graph, start, end, editor):
+    # build_area is a rect(),
+
+    # editor is editor
+    height = getY(start)
+    point = ()
+    print("World slice loaded!")
+    # Gets the ground height (the y value the highest block excluding leaves is located)
     open_set = PriorityQueue()
     open_set.put(start, 0)
     came_from = {}
@@ -31,6 +59,7 @@ def astar(graph, start, goal):
                 path.append(current)
                 current = came_from[current]
             path.append(start)
+            print(path) 
             return path[::-1]
 
         for neighbor in graph[current]:
@@ -44,35 +73,20 @@ def astar(graph, start, goal):
     return None
 
 # Generate roads between buildings
-def generate_roads(locations, editor): 
-    graph = {building_name: set() for building_name in locations}
-    for building_name1 in locations:
-        for building_name2 in locations:
-            if building_name1 != building_name2:
-                # Calculate the midpoint between the two buildings
-                midpoint = ivec2((locations[building_name1].x + locations[building_name2].x) // 2,
-                                (locations[building_name1].y + locations[building_name2].y) // 2)
-                # Add the midpoint as a node in the graph
-                graph[midpoint] = set()
-                # Add edges between the buildings and the midpoint
-                graph[building_name1].add(midpoint)
-                graph[midpoint].add(building_name1)
-                graph[building_name2].add(midpoint)
-                graph[midpoint].add(building_name2)
+'''
+Creates a road network between the buildings 
+TODO: After the settlement is created, pathfind 
+Access the points by:
+class Rect
+    _offset: ivec2, where first coodinate is x, second is z 
+    _size:   ivec2
+locations: is a default dict holding items such as: {'cabin': Rect((1046, -245), (65, 65)), 'well': Rect((1014, -269), (65, 65)), 'tree': Rect((1022, -253), (65, 65)), 'pyramid': Rect((1022, -245), (65, 65)), 'hut': Rect((1046, -253), (65, 65))})
+a point is the Rect's offset (x, z) , y should always be 
+'''
 
-    # Calculate and place roads
-    for building_name1 in locations:
-        for building_name2 in locations:
-            if building_name1 != building_name2:
-                path = astar(graph, building_name1, building_name2)
-                if path:
-                    # Place road blocks along the path
-                    for point in path:
-                        # Adjust this to place road blocks in Minecraft
-                        editor.placeBlock((point.x, 0, point.y), Block("road"))  
-    print("Roads generated successfully.")
-
-# Call the function to generate roads
-building_locations = generate_settlement()
-print(building_locations)
-generate_roads(building_locations)
+# threshold_distance = 25 # Adjust this value as needed
+buildings = settlement.generate_settlement()
+# # Calculate connections dynamically based on threshold distance
+print(buildings)
+# connections = calculate_connections(buildings, threshold_distance)
+# print('connections', connections)
