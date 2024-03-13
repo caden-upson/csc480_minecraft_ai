@@ -506,10 +506,30 @@ def generate_settlement():
     # locations["pool"] = loc
     # structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
    
+    #7x7
     print("Building Hut")
     loc = create_building_location(middle_location)
     locations["hut"] = loc
     structures.build_hut(biome_block_choice, loc, buildRect.middle, editor)
+
+    #7x9
+    print("Building Farm")
+    loc = create_building_location(middle_location)
+    locations["farm"] = loc
+    structures.build_farm(biome_block_choice, loc, buildRect.middle, editor)
+
+    #9x9
+    print("Building Fountain")
+    loc = create_building_location(middle_location)
+    locations["fountain"] = loc
+    structures.build_fountain(biome_block_choice, loc, buildRect.middle, editor)
+
+
+    #5x6
+    print("Building Small House")
+    loc = create_building_location(middle_location)
+    locations["small_house"] = loc
+    structures.build_small_house(biome_block_choice, loc, buildRect.middle, editor)
     return locations
 
 
