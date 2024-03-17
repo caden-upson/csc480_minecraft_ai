@@ -1,6 +1,12 @@
 ﻿# CSC 480: GDMC Group 1
 
 This project is a part of Professor Rodrigo Canaan's CSC 480 class at Cal Poly
+#### Contributors:
+Caden Upson,
+Brian Mai,
+Suhanth Alluri,
+Saba Hakimi,
+Shuya Yanase
 
 ## Installation
 
