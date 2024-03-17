@@ -20,3 +20,10 @@ Shuya Yanase
 2. Set the build area using `/setbuildarea ~0 0 ~0 ~64 200 ~64`
 3. Run `python settlement.py` to generate a settlement
 4. The settlement will be created in Minecraft
+
+## Libraries and External Resources
+
+- [GDPC Library](https://github.com/avdstaaij/gdpc)
+- [GDMC-HTTP](https://github.com/Niels-NTG/gdmc_http_interface)
+- [GDMC Wiki](https://gendesignmc.wikidot.com/)
+- [National Taiwan Normal University Submission](https://github.com/NTNU-GDMC/GDMC)
