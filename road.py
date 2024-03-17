@@ -115,14 +115,14 @@ def generate_paths(building_locations, buildRect, editor):
   for block in path:
         placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
 
-  start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2]-5)
+  start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2])
   goal_point = (filtered_dict["hut"][0]-7, filtered_dict["hut"][1], filtered_dict["hut"][2])
   path = a_star(start_point, goal_point, get_all_forbidden(filtered_dict), buildRect)
   print("Astar done: hut to pyramid")
   for block in path:
         placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
 
-  start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2]-5)
+  start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2])
   goal_point = (filtered_dict["small house"][0]+1, filtered_dict["small house"][1], filtered_dict["small house"][2]-3)
   path = a_star(start_point, goal_point, get_all_forbidden(filtered_dict), buildRect)
   print("Astar done: pyramid to small house")
