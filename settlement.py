@@ -148,9 +148,11 @@ def generate_settlement():
     loc = create_building_location(middle_location)
     locations['small house'] = structures.build_small_house(loc, buildRect.middle, editor)
 
+     #7x7
     print("Building Hut")
     loc = create_building_location(middle_location)
     locations['hut'] = structures.build_hut(loc, buildRect.middle, editor)
+
 
     print("Making paths...")
     generate_paths(locations, buildRect, editor)
