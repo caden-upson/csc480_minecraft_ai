@@ -72,5 +72,6 @@ def build_wall(buildRect: Rect, heightmap: dict, editor: Editor):
             else:
                 editor.placeBlock(addY(point, y), Block(wallPalette[i]))
                 
+# Places a dirt path block at the given point
 def placeDirtPath(editor: Editor, point):
     editor.runCommand(f"fill {point[0]} {point[1]} {point[2]} {point[0]-1} {point[1]} {point[2]-1} minecraft:dirt_path", syncWithBuffer=True)

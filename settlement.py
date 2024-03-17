@@ -1,24 +1,14 @@
-#!/usr/bin/env python3
-
-"""
-Place and retrieve a single block in the world.
-"""
-
 import sys
 from random import randint
 
-from gdpc import __url__, Editor, Block, Rect
+from gdpc import __url__, Editor, Rect
 from gdpc.exceptions import BuildAreaNotSetError, InterfaceConnectionError
 from gdpc.vector_tools import addY
-
-import random 
-from glm import ivec2
+ 
 from collections import defaultdict
 import structures
 import util
-import biome
-import road
-import astar
+from road import generate_paths
 
 # Create an editor object.
 # The Editor class provides a high-level interface to interact with the Minecraft world.
@@ -70,10 +60,6 @@ heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
     
 center = buildRect.center
 print("Biome = ", worldSlice.getBiomeGlobal(addY(buildRect.middle, heightmap[tuple((0, 0))])))
-# for x in range(0, center.x + 32):
-#     for z in range(0, center.y + 32):
-#         editor.placeBlock((x, height, z), Block("air"))
-
 
 '''
 Creates a Rect(), holding coordinates of where a building should be
@@ -82,7 +68,6 @@ locations: a dictionary holding: { building_name : Rect(location) }
 buildling: add False to argument, to not be connected on the road
 z_size: the x length of the settlement
 z_size: the z length of the settlement 
-TODO: Currently, buildings can clash into each other, needs to be fixed
 '''
 spots_taken = set()
 def create_building_location(middle: Rect, x_size=64, z_size=64):
@@ -115,13 +100,13 @@ def create_building_location(middle: Rect, x_size=64, z_size=64):
 
 '''
 Generates a settlement 
-returns a dictionary of building names to locations (as Rects)
 '''
 def generate_settlement(): 
 
     middle_location = buildRect # use this to base off create_building_offset
 
     locations = defaultdict(tuple)
+
 
     # Build wall to highlight build area
     print("Building wall")
@@ -135,53 +120,42 @@ def generate_settlement():
     # 11x4x11
     print("Building Cabin")
     loc = create_building_location(middle_location)
-    locations['cabin'] = structures.build_cabin(biome.biome_block_choice, loc, buildRect.middle, editor)
+    locations['cabin'] = structures.build_cabin(loc, buildRect.middle, editor)
     
     # 3x4x3
     print("Building Well")
     loc = create_building_location(middle_location)
-    locations['well'] = structures.build_well(biome.biome_block_choice, loc, buildRect.middle, editor)
+    locations['well'] = structures.build_well(loc, buildRect.middle, editor)
     # 5xYx5
-    print("Building Tree")
+    print("Building Tree 1")
     loc = create_building_location(middle_location)
-    locations['tree'] = structures.build_tree(biome.biome_block_choice, loc, buildRect.middle, editor)
+    locations['tree'] = structures.build_tree(loc, buildRect.middle, editor)
+
+    print("Building Tree 2")
+    loc = create_building_location(middle_location)
+    locations['tree'] = structures.build_tree(loc, buildRect.middle, editor)
+
+    print("Building Tree 3")
+    loc = create_building_location(middle_location)
+    locations['tree'] = structures.build_tree(loc, buildRect.middle, editor)
 
     # 9x4x9
     print("Building Pyramid")
     loc = create_building_location(middle_location)
-    locations['pyramid'] = structures.build_pyramid(biome.biome_block_choice, loc, buildRect.between((3,12), (10, 19)), editor)
+    locations['pyramid'] = structures.build_pyramid(loc, buildRect.between((3,12), (10, 19)), editor)
 
-    # print("Building Swimming Pool")
-    # loc = create_building_location(middle_location)
-    # locations["pool"] = loc
-    # structures.build_swimming_pool(biome_block_choice, loc, buildRect.middle, editor)
+    print("Building Small house")
+    loc = create_building_location(middle_location)
+    locations['small house'] = structures.build_small_house(loc, buildRect.middle, editor)
 
     print("Building Hut")
     loc = create_building_location(middle_location)
-    locations['hut'] = structures.build_hut(biome.biome_block_choice, loc, buildRect.middle, editor)
+    locations['hut'] = structures.build_hut(loc, buildRect.middle, editor)
 
-    return locations
+    print("Making paths...")
+    generate_paths(locations, buildRect, editor)
 
-worldSlice = editor.loadWorldSlice(buildRect)
-building_locations = generate_settlement()
-heightmap = worldSlice.heightmaps["MOTION_BLOCKING_NO_LEAVES"]
-filtered_dict = {key: value for key, value in building_locations.items() if key != 'tree'}
-# filtered_dict = {"cabin" : (-233, 84, 270), "well" : (-243, 70, 249)}
-start_point = (filtered_dict["well"][0]-3, filtered_dict["well"][1], filtered_dict["well"][2]-3)
-goal_point = (filtered_dict["cabin"][0]-3, filtered_dict["cabin"][1], filtered_dict["cabin"][2]-3)
-path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
-print("Astar done")
-for block in path:
-    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
-start_point = (filtered_dict["well"][0]-3, filtered_dict["well"][1], filtered_dict["well"][2]-3)
-goal_point = (filtered_dict["hut"][0]-7, filtered_dict["hut"][1], filtered_dict["hut"][2]-7)
-path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
-print("Astar done")
-for block in path:
-    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
-start_point = (filtered_dict["pyramid"][0]-5, filtered_dict["pyramid"][1], filtered_dict["pyramid"][2]-5)
-goal_point = (filtered_dict["hut"][0]-7, filtered_dict["hut"][1], filtered_dict["hut"][2]-7)
-path = road.a_star(start_point, goal_point, road.get_all_forbidden(filtered_dict))
-print("Astar done")
-for block in path:
-    util.placeDirtPath(Editor(), (block[0], heightmap[(block[0] - buildRect.offset.x, block[2] - buildRect.offset.y)] - 1, block[2]))
+    print("Settlement complete")
+
+
+generate_settlement()
