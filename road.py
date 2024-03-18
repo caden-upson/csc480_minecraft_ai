@@ -2,7 +2,6 @@ from gdpc import __url__, Editor
 from util import placeDirtPath
 import heapq
 
-
 # a* algorithm to generate paths between two points
 # heuristic: 2d manhattan distance from goal (y change not included)
 # cost: cost to move to next point (includes y change)

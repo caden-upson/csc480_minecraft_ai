@@ -1,4 +1,3 @@
-
 biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "plank":"oak_planks",
                                            "fence":"oak_fence",
@@ -407,4 +406,3 @@ biome_block_choice = {"minecraft:plains": {"log":"oak_log",
                                            "door":"oak_door",
                                            "leaves":"oak_leaves",
                                            "wood":"oak_wood"}}
-# print(worldSlice.getBiome(addY(buildRect.middle, heightmap[tuple(buildRect.offset)])))
