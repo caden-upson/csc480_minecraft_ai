@@ -2,8 +2,11 @@
 
 This project is a part of Professor Rodrigo Canaan's CSC 480 class at Cal Poly. The framework used is the GDPC (Generative Design Python Client) made specifically for the Generative Design in Minecraft competition. This python script is to be run along with the GDMC-HTTP mod for Minecraft.
 
+<<<<<<< HEAD
 The best, most up-to-date branch for this repository is the brian3 branch. To get the best results, use brian3 rather than the main branch.
 
+=======
+>>>>>>> 04fa55d78d9f564b01269c40d03c7852ceac6157
 ## Usage
 
 1. Run Minecraft 1.20.0 with GDMC-HTTP mod installed (with Forge)
